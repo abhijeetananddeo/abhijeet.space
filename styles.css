@@ -50,6 +50,10 @@ a {
   max-width: 100%;
 }
 
+.menu-overlay {
+  padding: 0;
+}
+
 nav ul li {
   display: inline;
   margin: 15px;
@@ -98,7 +102,7 @@ a img {
   }
 
   .text {
-    padding-left: 50px;
+    padding-left: 56px;
     padding-right: 0;
   }
 }
