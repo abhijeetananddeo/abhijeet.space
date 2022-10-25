@@ -65,6 +65,16 @@ a img {
   margin: 5px 5px;
 }
 
+a:hover {
+  opacity: 60%;
+  transition: 0.25s;
+}
+
+.nav:hover {
+  opacity: 60%;
+  transition: 0.25s;
+}
+
 .overlay {
   position: absolute;
   width: 100%;
