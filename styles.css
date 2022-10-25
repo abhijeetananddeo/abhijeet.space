@@ -153,6 +153,11 @@ a:hover {
   .main-section{
     margin: 1.5rem;
   }
+
+  .nav:hover {
+    opacity: 100%;
+    transition: 0s;
+  }
 }
 
 @media (max-width: 508px) {
