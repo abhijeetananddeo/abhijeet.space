@@ -17,23 +17,30 @@
 </head>
 
 <body>
+    <div class="overlay">
+        <ul style="list-style: none;">
+            <li>Home</li>
+            <li>About</li>
+        </ul>
+        <p class="close-menu" onclick="closeMenu()">Close</p>
+    </div>
     <main class="main-section">
         <nav>
-        <ul style="list-style: none;">
-            <li>Menu</li>
-        </ul>
+            <ul style="list-style: none;">
+                <li onclick="openMenu()">Menu</li>
+            </ul>
         </nav>
         <div class="text">
             <p class="intro">I have always been curious about how things work and I aspire to never let it die.<br>
             I am currently enrolled in a Bachelor's degree in a Uni in India.<br>
             I am going to grow this site as I grow, I have a bunch of ideas to implement. Let's see if it works
                 out!
-            <p>You can contact me here:</p>
+            </p>
             <div>
-                <a href="mailto:hi@abhijeet.space">Mail</a>
-                <a href="https://github.com/abhijeetananddeo">Github</a>
-                <a href="https://www.behance.net/anandabhijeet">Be</a>
-                <a href="http://twitter.com/abhijeetanand96">Twitter</a>
+                <a href="mailto:hi@abhijeet.space" target="_blank"><img src="./assets/send mail.svg" alt="Mail"></a>
+                <a href="https://github.com/abhijeetananddeo" target="_blank"><img src="./assets/github.svg" alt="Github"></a>
+                <a href="https://www.behance.net/anandabhijeet" target="_blank"><img src="./assets/behance.svg" alt="Behance"></a>
+                <a href="http://twitter.com/abhijeetanand96" target="_blank"><img src="./assets/twitter.svg" alt="Twitter"></a>
             </div>
         </div>
         <div class="name">

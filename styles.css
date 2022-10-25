@@ -28,7 +28,7 @@ a {
 }
 
 .intro {
-  font-size: 1.125rem;
+  font-size: 18px;
   margin-top: 16px;
 }
 
@@ -45,4 +45,31 @@ nav {
 nav ul li {
   display: inline;
   margin: 15px;
+}
+
+a img {
+  width: 30px;
+  margin: 5px 5px;
+}
+
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  top: -100vh;
+  left: 0;
+  z-index: 0;
+  background-color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.75s;
+}
+
+.close-menu {
+  position: absolute;
+  width: 25px;
+  right: 80px;
+  top: 50px;
+  cursor: pointer;
 }
