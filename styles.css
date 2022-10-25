@@ -117,7 +117,7 @@ a img {
 }
 
 
-@media (max-width: 638px) {
+@media (max-width: 650px) {
   nav ul li {
     margin: 0;
   }
@@ -162,9 +162,25 @@ a img {
 @media (max-width: 432px) {
   .text-name{
     font-size: 56px;
+    margin: 0px 40px;
   }
   
   .main-section {
     margin: 2rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .text {
+    width: 12rem;
+  }
+
+  .text-name{
+    font-size: 40px;
+    margin: 0px 20px;
+  }
+  
+  .main-section {
+    margin: 1.8rem;
   }
 }
