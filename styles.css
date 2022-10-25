@@ -70,10 +70,6 @@ a:hover {
   transition: 0.25s;
 }
 
-.nav:hover {
-  opacity: 60%;
-  transition: 0.25s;
-}
 
 .overlay {
   position: absolute;
@@ -154,10 +150,6 @@ a:hover {
     margin: 1.5rem;
   }
 
-  .nav:hover {
-    opacity: 100%;
-    transition: 0s;
-  }
 }
 
 @media (max-width: 508px) {
