@@ -184,3 +184,23 @@ a img {
     margin: 1.8rem;
   }
 }
+
+@media (min-width: 1800px) {
+  .text {
+    width: 40rem;
+  }
+
+  .text-name{
+    font-size: 200px;
+    margin: 0px 80px;
+  }
+  
+  .main-section {
+    margin: 3rem;
+  }
+
+  .intro {
+    font-size: 22px;
+    margin-top: 16px;
+  }
+}
