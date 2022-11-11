@@ -112,6 +112,10 @@ a:hover {
     padding-left: 56px;
     padding-right: 0;
   }
+
+  .text-name {
+    font-size: 120px;
+  }
 }
 
 @media (max-width: 748px) {
