@@ -1,60 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abhijeet A.</title>
-    <meta name="description" content="Hello there. May the force be with you.">
-    <link rel="shortcut icon" type="image/png" href="./assets/favicon.png"/>
-
-    <!-- fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">
-
-    <!-- styles -->
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Abhijeet A.</title>
+  <meta name="description" content="A generalist in Bengaluru — design, code, communication, strategy." />
+  <link rel="shortcut icon" type="image/png" href="./assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
+<body data-density="airy" data-rule="hairline">
 
-<body>
-    <div class="overlay">
-        <ul class="menu-overlay" style="list-style: none;">
-            <li><a href="/">Home</a></li>
-            
-        </ul>
-        <p class="close-menu" onclick="closeMenu()">Close</p>
+  <main class="page">
+
+    <!-- ── Top bar: intro | nav | CTA ──────────────────────────── -->
+    <header class="topbar">
+
+      <div class="intro reveal" style="--d:60ms">
+        <p>I do a lot of things — design, code, communication, strategy, and a few more depending on the day. Not because I couldn't pick one, but because I looked at the options and thought, why not all of it. The output is always good. Always complete.</p>
+        <p>I've never stayed in one lane. Turns out that was the right call.</p>
+      </div>
+
+      <nav class="nav reveal" style="--d:140ms" id="nav">
+        <a href="#/" data-view="index" class="active">Home</a>
+        <a href="#/work" data-view="work">Work</a>
+        <a href="#/find" data-view="find">Find me</a>
+      </nav>
+
+      <button class="cta reveal" style="--d:220ms" id="cta-hello" type="button">
+        <span class="cta-s cta-s-default">Say hello</span>
+        <span class="cta-s cta-s-email" aria-hidden="true">
+          <svg class="copy-icon" viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 1h6a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1"/>
+            <rect x="1" y="4" width="8" height="9" rx="1"/>
+          </svg>
+          <span class="cta-email">hi@abhijeet.space</span>
+        </span>
+        <span class="cta-s cta-s-copied" aria-hidden="true">
+          <svg class="check-icon" viewBox="0 0 14 14" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2.5 7.5 L5.5 10.5 L11.5 3.5"/>
+          </svg>
+          Copied
+        </span>
+        <span class="cta-sr" role="status" aria-live="polite"></span>
+      </button>
+
+    </header>
+
+    <!-- ── Stage: switches between views ───────────────────────── -->
+    <div class="stage reveal" style="--d:340ms">
+
+      <!-- INDEX: animation lives here -->
+      <section class="view view-index active" data-view="index" aria-label="Index">
+        <div class="anim-wrap">
+          <canvas id="anim"></canvas>
+          <div class="anim-vignette" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <!-- WORK -->
+      <section class="view view-work" data-view="work" aria-label="Work" hidden>
+        <div class="work-wrap">
+          <div class="work-head">
+            <span class="num">§ Work</span>
+            <span class="line"></span>
+            <span class="count">Six entries · 2014 → now</span>
+          </div>
+          <ol class="trail">
+            <li>
+              <span class="idx">01</span>
+              <div class="body">
+                <span class="lead">The first time the internet paid me.</span> Built a technical blog in school, wrote and coded it myself, added AdSense. Made a couple hundred dollars before moving on.
+                <span class="aside">— Tenth grade. Didn't know that wasn't normal.</span>
+              </div>
+            </li>
+            <li>
+              <span class="idx">02</span>
+              <div class="body">
+                <span class="lead">Discovered I liked being the person who could do both.</span> Worked across campus clubs — designing posters, building interactive games, exploring whatever needed doing.
+                <span class="aside">— Designer and developer at the same time. Still am.</span>
+              </div>
+            </li>
+            <li>
+              <span class="idx">03</span>
+              <div class="body">
+                <span class="lead">First real design work.</span> UI/UX at Learn With One, an early-stage edtech startup that later pivoted into Logic Bloom.
+                <span class="aside">— My pixels are still in there somewhere.</span>
+              </div>
+            </li>
+            <li>
+              <span class="idx">04</span>
+              <div class="body">
+                <span class="lead">Still my favourite "we built this" story.</span> Software engineer at Priyamventures — joined early, wore many hats, was part of the team when a product got acquired.
+                <span class="aside">— Learned more in that year than any classroom.</span>
+              </div>
+            </li>
+            <li>
+              <span class="idx">05</span>
+              <div class="body">
+                <span class="lead">Different hat, same building.</span> Now PM / engineer at Priyamventures — researching, communicating, building.
+                <span class="now">Now</span>
+                <span class="aside">— Still here. Still figuring it out.</span>
+              </div>
+            </li>
+            <li>
+              <span class="idx">06</span>
+              <div class="body">
+                <!-- TINKERING: fill this in -->
+                <span class="todo">Tinkering</span>
+                <span class="lead">Something is being made here.</span> Still deciding what to write — something better than "ESP32 and side projects."
+                <span class="aside">— Placeholder. Replace me.</span>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- FIND ME -->
+      <section class="view view-find" data-view="find" aria-label="Find me" hidden>
+        <div class="find-wrap">
+          <div class="find-head">Find me</div>
+          <ul class="find-list">
+            <li>
+              <a class="find-item" href="mailto:hi@abhijeet.space">
+                <span class="find-platform">Email</span>
+                <span class="find-detail">
+                  <span class="find-handle">hi@abhijeet.space</span>
+                  <span class="find-arrow">↗</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="find-item" href="https://twitter.com/abhijeetanand96" target="_blank" rel="noopener">
+                <span class="find-platform">Twitter</span>
+                <span class="find-detail">
+                  <span class="find-handle">@abhijeetanand96</span>
+                  <span class="find-arrow">↗</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="find-item" href="https://github.com/abhijeetananddeo" target="_blank" rel="noopener">
+                <span class="find-platform">GitHub</span>
+                <span class="find-detail">
+                  <span class="find-handle">abhijeetananddeo</span>
+                  <span class="find-arrow">↗</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="find-item" href="https://www.behance.net/anandabhijeet" target="_blank" rel="noopener">
+                <span class="find-platform">Behance</span>
+                <span class="find-detail">
+                  <span class="find-handle">anandabhijeet</span>
+                  <span class="find-arrow">↗</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
     </div>
-    
-    <main class="main-section">
-        <div class="upper">
-            <nav class="nav">
-                <ul style="list-style: none; padding-left: 0;">
-                    <li onclick="openMenu()">Menu</li>
-                </ul>
-            </nav>
-            <div class="text">
-                <p class="intro">I have always been curious about how things work and I aspire to never let it die.
-                I am currently enrolled in a Bachelor's degree in a Uni in India.
-                I am going to grow this site as I grow, I have a bunch of ideas to implement. Let's see if it works
-                    out!
-                </p>
-                <div>
-                    <a href="mailto:hi@abhijeet.space" target="_blank"><img src="./assets/send mail.svg" alt="Mail"></a>
-                    <a href="https://github.com/abhijeetananddeo" target="_blank"><img src="./assets/github.svg" alt="Github"></a>
-                    <a href="https://www.behance.net/anandabhijeet" target="_blank"><img src="./assets/behance.svg" alt="Behance"></a>
-                    <a href="http://twitter.com/abhijeetanand96" target="_blank"><img src="./assets/twitter.svg" alt="Twitter"></a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="name">
-            <h1 class="text-name">Abhijeet</h1>
-        </div>
-    </main>
 
-    <script src="app.js"></script>
+    <!-- ── Bottom: name left, meta right ───────────────────────── -->
+    <footer class="namebar">
+      <h1 class="name reveal" style="--d:480ms">
+        Abhijeet <span class="a">A<span class="period">.</span></span>
+      </h1>
+      <div class="meta reveal" style="--d:560ms">
+        <div class="live">In Bangalore</div>
+        <div><span id="age-counter">23.58904110</span> years old</div>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="app.js"></script>
+
 </body>
-
 </html>
