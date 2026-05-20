@@ -355,7 +355,7 @@ body[data-view="find"]  .view-find {
 }
 .work-head .num   { color: var(--muted); }
 .work-head .line  { height: 1px; background: var(--rule); }
-.work-head .count { color: var(--muted); }
+.work-head .count { color: var(--muted); font-size: 14px; letter-spacing: 0; }
 
 /* Trail */
 .trail {
@@ -504,7 +504,7 @@ body[data-view="find"] .stage {
 }
 .find-item:hover .find-detail {
   opacity: 1;
-  transform: translateX(0);
+  transform: translate(4px, -2px);
   pointer-events: auto;
 }
 
@@ -515,13 +515,9 @@ body[data-view="find"] .stage {
   color: var(--muted);
 }
 .find-arrow {
-  font-size: 15px;
-  display: inline-block;
-  line-height: 1;
-  transition: transform 220ms cubic-bezier(0.2, 0.6, 0.2, 1);
-}
-.find-item:hover .find-arrow {
-  transform: translate(3px, -3px);
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 /* ── Namebar: name left, meta right ─────────────────────────────── */
@@ -607,10 +603,37 @@ body[data-rule="none"] { --rule: transparent; }
   }
   .intro { max-width: 100%; }
   .nav   { justify-self: start; gap: 22px; }
-  .cta   { justify-self: start; }
+
+  /* Shift left so the button label aligns with intro/nav text;
+     add a touch of top breathing room */
+  .cta {
+    justify-self: start;
+    margin-left: -4px;
+    margin-top: 6px;
+  }
+
+  /* Keep padding constant on mobile — no shrink when switching tabs */
+  body[data-view="work"] .page,
+  body[data-view="find"] .page {
+    padding: var(--pad);
+    gap: 24px;
+  }
+
   .namebar { grid-template-columns: 1fr; }
   .namebar .meta { text-align: left; }
   h1.name { font-size: clamp(48px, 13vw, 80px); }
   .find-platform { font-size: clamp(24px, 7vw, 36px); }
   .find-list .ext { display: none; }
+
+  /* No hover on mobile — always show handle + arrow */
+  .find-detail {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+    transition: none;
+  }
+  /* Suppress all hover transforms on mobile — tap state is instant */
+  .find-item:hover .find-platform { transform: none; }
+  .find-item:hover .find-detail   { transform: translateX(0); }
+  .find-item:hover .find-arrow    { transform: none; }
 }
