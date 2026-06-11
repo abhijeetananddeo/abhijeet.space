@@ -5,6 +5,7 @@
     const views = Array.from(document.querySelectorAll('.view'));
     const navLinks = Array.from(document.querySelectorAll('#nav a'));
     const cta = document.getElementById('cta-hello');
+    const introRandom = document.getElementById('intro-random');
     const ageCounter = document.getElementById('age-counter');
     const canvas = document.getElementById('anim');
 
@@ -38,6 +39,18 @@
       [168, 116, 96],
     ];
     const N_PARTICLES = 240;
+
+    function setRandomIntroLine() {
+      if (!introRandom) return;
+
+      const lines = [
+        "My mom said the computer would ruin my future. The computer now pays rent. We don't discuss this.",
+        "My mom can explain my sister's job in one word. Mine takes her a pause, a sigh, and the word 'laptop'.",
+        "This is not my LinkedIn. That one has the boring version of me. He uses words like 'synergy'.",
+      ];
+
+      introRandom.textContent = lines[Math.floor(Math.random() * lines.length)];
+    }
 
     function rand(a, b) {
       return a + Math.random() * (b - a);
@@ -291,6 +304,7 @@
     }
 
     initCTA();
+    setRandomIntroLine();
     updateAgeCounter();
     setInterval(updateAgeCounter, 250);
 
