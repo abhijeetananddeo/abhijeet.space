@@ -21,6 +21,10 @@
       <div class="intro reveal" style="--d:60ms">
         <p>You're probably here because we've met, or you found this site somewhere. Either way, hi. I spend my days explaining to people why their idea will break in production, and my nights building things that break in production. I'm also the guy who noticed your website's padding was off by 4 pixels and said nothing.</p>
         <p id="intro-random">I've never stayed in one lane. Turns out that was the right call.</p>
+        <button class="intro-expand" type="button" aria-expanded="false">
+          <span class="intro-expand-more">more</span>
+          <span class="intro-expand-less">less</span>
+        </button>
       </div>
 
       <nav class="nav reveal" style="--d:140ms" id="nav">
@@ -54,8 +58,7 @@
 
       <!-- INDEX: animation lives here -->
       <section class="view view-index active" data-view="index" aria-label="Index">
-        <div class="anim-wrap">
-          <canvas id="anim"></canvas>
+        <div class="anim-wrap" id="anim-wrap">
           <div class="anim-vignette" aria-hidden="true"></div>
         </div>
       </section>
@@ -89,7 +92,7 @@
               <div class="body">
                 <span class="todo">Freelance</span>
                 <span class="lead">Designed and built:</span> <a href="https://concicon.com/" target="_blank" rel="noopener" class="work-link">Concicon<svg viewBox="0 0 10 10" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" y1="8" x2="8" y2="2"/><polyline points="4.5,2 8,2 8,5.5"/></svg></a>, Every screen drawn in figma, then coded by the same hands. Nothing got lost between mockup and production.
-                <span class="aside">— The handoff meeting was just me, agreeing with myself.</span>
+                <span class="aside">— the handoff meeting was just me, agreeing with myself.</span>
               </div>
             </li>
             <li>
@@ -186,6 +189,7 @@
 
   </main>
 
+  <script src="murmuration.js"></script>
   <script src="app.js"></script>
 
 </body>
