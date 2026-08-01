@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>404 — Abhijeet A.</title>
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --ink: #0c0c0c;
+      --ink-2: #2a2a2a;
+      --muted: #8a8a8a;
+      --rule: #e7e7e7;
+      --accent: #587a5c;
+      --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+      --mono:  "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      --pad:   clamp(24px, 4vw, 56px);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    html {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: var(--ink); color: var(--bg); }
+
+    .page {
+      min-height: 100svh;
+      padding: var(--pad);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 24px;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .body { display: flex; align-items: center; }
+    .body p {
+      font-size: clamp(24px, 3.4vw, 40px);
+      line-height: 1.25;
+      letter-spacing: -0.015em;
+      color: var(--ink-2);
+      max-width: 22ch;
+      margin: 0;
+    }
+    .body em { font-style: italic; color: var(--ink); }
+    .bottom {
+      border-top: 1px solid var(--rule);
+      padding-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 24px;
+    }
+    .code {
+      font-family: var(--serif);
+      font-size: clamp(56px, 9.5vw, 140px);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      margin: 0;
+      font-weight: 400;
+    }
+    .code .period { margin-left: -0.04em; color: var(--accent); }
+    .home {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 0.6em;
+      border-bottom: 1px solid var(--rule);
+      transition: border-color 240ms ease;
+    }
+    .home:hover { border-color: var(--ink); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="eyebrow">abhijeet.space</div>
+
+    <div class="body">
+      <p>Nothing lives at this address. <em>Nothing ever did.</em></p>
+    </div>
+
+    <footer class="bottom">
+      <h1 class="code">404<span class="period">.</span></h1>
+      <a class="home" href="/">
+        Back home
+        <svg viewBox="0 0 10 10" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" y1="8" x2="8" y2="2"/><polyline points="4.5,2 8,2 8,5.5"/></svg>
+      </a>
+    </footer>
+  </main>
+</body>
+</html>
