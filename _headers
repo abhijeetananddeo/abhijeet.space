@@ -8,6 +8,11 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+# The share card keeps a stable filename and gets re-cut whenever the copy
+# changes, so it must not inherit the immutable rule above. Later rules win.
+/assets/og.png
+  Cache-Control: public, max-age=3600, must-revalidate
+
 /sitemap.xml
   Cache-Control: public, max-age=3600
 
