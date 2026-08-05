@@ -366,9 +366,71 @@ body[data-view="find"]  .view-find {
   letter-spacing: 0.18em;
   color: var(--ink);
 }
+/* Keep the jump control reachable for the whole scroll */
+body[data-view="work"] .work-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 0 0 24px;
+  padding: 14px 0 12px;
+  background: var(--bg);
+}
 .work-head .num   { color: var(--muted); }
 .work-head .line  { height: 1px; background: var(--rule); }
-.work-head .count { color: var(--muted); font-size: 14px; letter-spacing: 0; }
+
+/* Jump between the start of the story and the present */
+.work-jump {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 5px 9px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    color        220ms ease,
+    border-color 220ms ease;
+}
+.work-jump:hover { color: var(--ink); border-color: var(--ink); }
+.work-jump-arrow {
+  flex-shrink: 0;
+  transition: transform 320ms cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+/* Flips to point back at the beginning once you've reached the present */
+.work-jump.is-at-now .work-jump-arrow { transform: rotate(180deg); }
+
+/* Marker: where the story starts */
+.trail-start {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.trail-start-dot {
+  width: 5px; height: 5px;
+  border: 1px solid var(--faint);
+  border-radius: 50%;
+}
+.trail-start::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
 
 /* Trail */
 .trail {
@@ -376,6 +438,8 @@ body[data-view="find"]  .view-find {
   margin: 0; padding: 0;
   border-top: 1px solid var(--rule);
 }
+/* The start marker already draws the top rule */
+.trail-start + .trail { border-top: none; }
 .trail li {
   display: block;
   padding: 24px 0;
@@ -383,6 +447,10 @@ body[data-view="find"]  .view-find {
 }
 body[data-density="airy"] .trail li { padding: 34px 0; }
 body[data-density="tight"] .trail li { padding: 14px 0; }
+
+/* Breathing room when jumped to */
+.trail-start,
+.trail li { scroll-margin-top: 24px; }
 
 .trail .idx { display: none; }
 
