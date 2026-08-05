@@ -217,6 +217,50 @@
       });
     }
 
+    // ── Work: jump between the beginning and now ─────────────────
+    function initWorkJump() {
+      const btn   = document.getElementById('work-jump');
+      const now   = document.getElementById('work-now');
+      const start = document.getElementById('work-start');
+      if (!btn || !now || !start) return;
+
+      const label = btn.querySelector('.work-jump-label');
+
+      function atNow() { return btn.classList.contains('is-at-now'); }
+
+      btn.addEventListener('click', function () {
+        const target = atNow() ? start : now;
+        target.scrollIntoView({
+          behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+          block: 'start',
+        });
+      });
+
+      // Once the present is on screen, the button offers the way back
+      function setAtNow(visible) {
+        btn.classList.toggle('is-at-now', visible);
+        label.textContent = visible ? 'start' : 'now';
+        btn.setAttribute('aria-label', visible
+          ? 'Back to the beginning'
+          : 'Skip to what I do now');
+      }
+
+      function syncJump() {
+        const r = now.getBoundingClientRect();
+        // "At now" once a third of the last entry has come into view
+        const shown = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
+        setAtNow(shown > Math.min(r.height, window.innerHeight) * 0.34);
+      }
+
+      window.addEventListener('scroll', syncJump, { passive: true });
+      window.addEventListener('resize', syncJump);
+      syncJump();
+    }
+
+    function prefersReducedMotion() {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
     // ── Intro random line ────────────────────────────────────────
     function setRandomIntroLine() {
       if (!introRandom) return;
@@ -247,6 +291,7 @@
 
     // ── Init ─────────────────────────────────────────────────────
     initCTA();
+    initWorkJump();
     setRandomIntroLine();
     updateAgeCounter();
     setInterval(updateAgeCounter, 250);
