@@ -8,6 +8,8 @@
     const introRandom = document.getElementById('intro-random');
     const ageCounter  = document.getElementById('age-counter');
     const animWrap    = document.getElementById('anim-wrap');
+    const birdCount   = document.getElementById('bird-count');
+    const figHint     = document.querySelector('.fig-hint');
 
     if (!views.length) return;
 
@@ -33,6 +35,12 @@
           interactive: true,
         });
       }
+      updateBirdCount();
+    }
+
+    // The caption quotes the real flock size, which depends on the screen
+    function updateBirdCount() {
+      if (murApi && birdCount) birdCount.textContent = murApi.count();
     }
 
     function pauseAnim() {
@@ -261,6 +269,28 @@
       return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     }
 
+    // ── FDE definition: keep the card inside the viewport ──────────
+    function initAbbr() {
+      document.querySelectorAll('.abbr-wrap').forEach(function (wrap) {
+        const tip = wrap.querySelector('.abbr-tooltip');
+        if (!tip) return;
+        function place() {
+          const gutter = 12;
+          const w = wrap.getBoundingClientRect();
+          const half = tip.offsetWidth / 2;
+          const centre = w.left + w.width / 2;
+          const min = gutter + half, max = window.innerWidth - gutter - half;
+          const shift = Math.min(max, Math.max(min, centre)) - centre;
+          tip.style.setProperty('--tip-shift', shift + 'px');
+        }
+        wrap.addEventListener('mouseenter', place);
+        wrap.addEventListener('focusin', place);
+        wrap.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') document.activeElement.blur();
+        });
+      });
+    }
+
     // ── Intro random line ────────────────────────────────────────
     function setRandomIntroLine() {
       if (!introRandom) return;
@@ -292,9 +322,19 @@
     // ── Init ─────────────────────────────────────────────────────
     initCTA();
     initWorkJump();
+    initAbbr();
     setRandomIntroLine();
     updateAgeCounter();
     setInterval(updateAgeCounter, 250);
+
+    if (figHint && window.matchMedia('(hover: none)').matches) {
+      figHint.textContent = 'Drag through it.';
+    }
+    let countTimer = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(countTimer);
+      countTimer = setTimeout(updateBirdCount, 250);
+    });
 
     window.addEventListener('hashchange', function () { showView(currentView()); });
     showView(currentView());

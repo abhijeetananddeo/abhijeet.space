@@ -1,6 +1,6 @@
 /*!
  * Murmuration — a minimal flocking-boids banner animation.
- * Dependency-free. ~6KB. Drop-in for any website.
+ * Dependency-free. ~8KB. Drop-in for any website.
  *
  * USAGE
  *   <div data-murmuration style="width:100%;height:340px"></div>
@@ -66,34 +66,60 @@
     host.appendChild(canvas);
     const ctx = canvas.getContext('2d');
 
-    const st = { w: 0, h: 0, mx: -1e4, my: -1e4, mIn: false, birds: [] };
+    const st = { w: 1, h: 1, mx: -1e4, my: -1e4, mIn: false, birds: [] };
     const reduce = global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     function resize() {
       const r = host.getBoundingClientRect();
       const dpr = Math.min(global.devicePixelRatio || 1, 2);
+      const pw = st.w, ph = st.h;
       st.w = Math.max(1, r.width);
       st.h = Math.max(1, r.height);
       canvas.width = Math.round(st.w * dpr);
       canvas.height = Math.round(st.h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      seed();
+      if (!st.birds.length) { seed(); return; }
+      // Keep the flock mid-flight: stretch it to the new box and top up / trim
+      const sx = st.w / pw, sy = st.h / ph;
+      for (const b of st.birds) { b.x *= sx; b.y *= sy; }
+      const n = count();
+      while (st.birds.length > n) st.birds.pop();
+      while (st.birds.length < n) {
+        const o = st.birds[Math.floor(Math.random() * st.birds.length)];
+        st.birds.push(bird(o.x + (Math.random() - 0.5) * 20, o.y + (Math.random() - 0.5) * 20, Math.atan2(o.vy, o.vx)));
+      }
+      if (reduce) draw();
     }
 
+    // Enough birds to read as a murmuration, not scattered dashes
     function count() {
-      return Math.min(280, Math.max(20, Math.round((st.w * st.h / 11000) * opts.density)));
+      return Math.min(520, Math.max(60, Math.round((st.w * st.h / 2600) * opts.density)));
     }
 
+    function bird(x, y, heading) {
+      const a = heading + (Math.random() - 0.5) * 0.6;
+      return { x: x, y: y, vx: Math.cos(a), vy: Math.sin(a), green: Math.random() < opts.green };
+    }
+
+    // Start as a few loose flocks already heading somewhere, so the first
+    // frame looks like birds in formation rather than noise
     function seed() {
       const n = count(), birds = [];
-      for (let i = 0; i < n; i++) {
-        const a = Math.random() * Math.PI * 2;
-        birds.push({
-          x: Math.random() * st.w,
-          y: Math.random() * st.h,
-          vx: Math.cos(a), vy: Math.sin(a),
-          green: Math.random() < opts.green,
-        });
+      const groups = st.w > 700 ? 3 : 2;
+      for (let g = 0; g < groups; g++) {
+        const cx = st.w * (0.2 + 0.6 * Math.random());
+        const cy = st.h * (0.3 + 0.4 * Math.random());
+        const heading = Math.random() * Math.PI * 2;
+        const spread = Math.min(st.w, st.h) * 0.16;
+        const size = Math.round(n / groups);
+        for (let i = 0; i < size && birds.length < n; i++) {
+          // Gaussian-ish blob, stretched along the direction of travel
+          const u = (Math.random() + Math.random() + Math.random() - 1.5) * spread * 1.4;
+          const v = (Math.random() + Math.random() + Math.random() - 1.5) * spread * 0.7;
+          const x = cx + Math.cos(heading) * u - Math.sin(heading) * v;
+          const y = cy + Math.sin(heading) * u + Math.cos(heading) * v;
+          birds.push(bird(Math.min(st.w, Math.max(0, x)), Math.min(st.h, Math.max(0, y)), heading));
+        }
       }
       st.birds = birds;
     }
@@ -107,18 +133,41 @@
     host.addEventListener('pointermove', onMove);
     host.addEventListener('pointerleave', onLeave);
 
+    // Neighbour lookups go through a uniform grid so a dense flock stays cheap
+    const PERC = 44, PERC2 = PERC * PERC;
+    let grid = new Map();
+    function buildGrid() {
+      grid.clear();
+      const P = st.birds;
+      for (let i = 0; i < P.length; i++) {
+        const k = ((P[i].x / PERC) | 0) * 4096 + ((P[i].y / PERC) | 0);
+        let cell = grid.get(k);
+        if (!cell) grid.set(k, (cell = []));
+        cell.push(P[i]);
+      }
+    }
+
     function step(t) {
       const W = st.w, H = st.h, sp = opts.speed, P = st.birds;
-      const maxS = 1.7 * sp, perc = 44, perc2 = perc * perc;
+      const maxS = 1.7 * sp;
+      buildGrid();
       for (let i = 0; i < P.length; i++) {
         const b = P[i];
         let ax = 0, ay = 0, cx = 0, cy = 0, sx = 0, sy = 0, cnt = 0;
-        for (let j = 0; j < P.length; j++) {
-          if (i === j) continue;
-          const o = P[j], dx = o.x - b.x, dy = o.y - b.y, d2 = dx * dx + dy * dy;
-          if (d2 < perc2) {
-            ax += o.vx; ay += o.vy; cx += o.x; cy += o.y; cnt++;
-            if (d2 < 256) { const d = Math.sqrt(d2) + 0.01; sx -= dx / d; sy -= dy / d; }
+        const gx = (b.x / PERC) | 0, gy = (b.y / PERC) | 0;
+        for (let ox = -1; ox <= 1; ox++) {
+          for (let oy = -1; oy <= 1; oy++) {
+            const cell = grid.get((gx + ox) * 4096 + (gy + oy));
+            if (!cell) continue;
+            for (let j = 0; j < cell.length; j++) {
+              const o = cell[j];
+              if (o === b) continue;
+              const dx = o.x - b.x, dy = o.y - b.y, d2 = dx * dx + dy * dy;
+              if (d2 < PERC2) {
+                ax += o.vx; ay += o.vy; cx += o.x; cy += o.y; cnt++;
+                if (d2 < 144) { const d = Math.sqrt(d2) + 0.01; sx -= dx / d; sy -= dy / d; }
+              }
+            }
           }
         }
         if (cnt) {
@@ -142,16 +191,20 @@
     }
 
     function draw() {
-      const ds = opts.size;
+      const ds = opts.size, L = 5 * ds;
       ctx.clearRect(0, 0, st.w, st.h);
-      for (const b of st.birds) {
-        const c = b.green ? opts.accent : opts.ink;
-        const a = Math.atan2(b.vy, b.vx), L = 6 * ds;
-        ctx.strokeStyle = hexA(c, b.green ? 0.85 : 0.55);
-        ctx.lineWidth = 1.1 * ds; ctx.lineCap = 'round';
+      ctx.lineWidth = 1.1 * ds; ctx.lineCap = 'round';
+      // Two passes (ink, then accent) so each colour is a single stroke call
+      for (let pass = 0; pass < 2; pass++) {
+        const green = pass === 1;
+        ctx.strokeStyle = hexA(green ? opts.accent : opts.ink, green ? 0.85 : 0.5);
         ctx.beginPath();
-        ctx.moveTo(b.x - Math.cos(a) * L, b.y - Math.sin(a) * L);
-        ctx.lineTo(b.x + Math.cos(a) * (L * 0.35), b.y + Math.sin(a) * (L * 0.35));
+        for (const b of st.birds) {
+          if (b.green !== green) continue;
+          const spd = Math.hypot(b.vx, b.vy) || 1, ux = b.vx / spd, uy = b.vy / spd;
+          ctx.moveTo(b.x - ux * L, b.y - uy * L);
+          ctx.lineTo(b.x + ux * (L * 0.35), b.y + uy * (L * 0.35));
+        }
         ctx.stroke();
       }
     }
@@ -172,6 +225,7 @@
     const api = {
       el: host,
       options: opts,
+      count() { return st.birds.length; },
       set(next) { Object.assign(opts, next); seed(); if (reduce) draw(); },
       destroy() {
         cancelAnimationFrame(raf);
