@@ -63,6 +63,8 @@ body[data-view="find"]  .page {
   height: auto;
   min-height: 100svh;
   overflow: visible;
+  /* Parked tooltips must never widen the page; clip keeps sticky working */
+  overflow-x: clip;
   padding: clamp(20px, 2.4vw, 36px);
   gap: 18px;
 }
@@ -83,6 +85,14 @@ body[data-view="find"]  .view-find {
   overflow: visible;
 }
 
+/* ── Keyboard focus ─────────────────────────────────────────────── */
+:where(a, button, [tabindex]):focus-visible {
+  outline: 1.5px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+.cta:focus-visible { border-radius: 999px; }
+
 /* ── Reveal animation ───────────────────────────────────────────── */
 .reveal {
   opacity: 0;
@@ -93,6 +103,9 @@ body[data-view="find"]  .view-find {
 @keyframes rise { to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) {
   .reveal { animation: none; opacity: 1; transform: none; }
+  .trail .now::before,
+  .now-card-label::before,
+  .namebar .meta .live::before { animation: none; }
 }
 
 /* ── Topbar: intro | nav | CTA ──────────────────────────────────── */
@@ -319,11 +332,6 @@ body[data-view="find"]  .view-find {
   position: relative;
   overflow: hidden;
 }
-#anim {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
 .anim-vignette {
   position: absolute;
   inset: 0;
@@ -332,6 +340,93 @@ body[data-view="find"]  .view-find {
     linear-gradient(to bottom, rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 14%, rgba(255,255,255,0) 86%, rgba(255,255,255,.85) 100%),
     linear-gradient(to right,  rgba(255,255,255,.85) 0%, rgba(255,255,255,0) 10%, rgba(255,255,255,0) 90%, rgba(255,255,255,.85) 100%);
 }
+
+/* Caption + "now" card sit over the bottom fade of the flock */
+.view-index { position: relative; }
+.anim-foot {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  pointer-events: none;
+}
+.anim-foot > * { pointer-events: auto; }
+
+.fig {
+  margin: 0;
+  max-width: 34ch;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.fig-num {
+  display: block;
+  margin-bottom: 2px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.fig-hint {
+  display: block;
+  margin-top: 2px;
+  color: var(--accent);
+}
+
+.now-card {
+  display: grid;
+  gap: 6px;
+  max-width: 300px;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-top: 2px solid var(--ink);
+  transition:
+    transform    320ms cubic-bezier(0.2, 0.6, 0.2, 1),
+    box-shadow   320ms ease;
+}
+.now-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px -12px rgba(12,12,12,.18);
+}
+.now-card-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.now-card-label::before {
+  content: "";
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+.now-card-body {
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.now-card-link {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.now-card-link span {
+  display: inline-block;
+  transition: transform 320ms cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.now-card:hover .now-card-link span { transform: translateX(3px); }
 
 /* ── Work view ──────────────────────────────────────────────────── */
 .view-work {
@@ -544,8 +639,10 @@ body[data-density="tight"] .trail li { padding: 14px 0; }
   position: absolute;
   bottom: calc(100% + 10px);
   left: 50%;
-  transform: translateX(-50%) translateY(6px);
+  transform: translateX(calc(-50% + var(--tip-shift, 0px))) translateY(6px);
   width: 270px;
+  max-width: calc(100vw - 24px);
+  visibility: hidden;
   background: var(--bg);
   border: 1px solid var(--rule);
   border-top: 2px solid var(--ink);
@@ -553,16 +650,23 @@ body[data-density="tight"] .trail li { padding: 14px 0; }
   box-shadow: 0 12px 32px -8px rgba(12,12,12,.18);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 180ms ease, transform 220ms cubic-bezier(0.2, 0.6, 0.2, 1);
+  transition:
+    opacity    180ms ease,
+    transform  220ms cubic-bezier(0.2, 0.6, 0.2, 1),
+    visibility 0s linear 220ms;
   z-index: 10;
   text-align: left;
   font-style: normal;
   font-weight: 400;
 }
-.abbr-wrap:hover .abbr-tooltip {
+.abbr-wrap:hover .abbr-tooltip,
+.abbr-wrap:focus-within .abbr-tooltip {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  visibility: visible;
+  transform: translateX(calc(-50% + var(--tip-shift, 0px))) translateY(0);
+  transition-delay: 0s;
 }
+.abbr:focus-visible { outline-offset: 2px; }
 .abbr-head {
   display: flex;
   align-items: baseline;
@@ -669,23 +773,23 @@ body[data-view="find"] .stage {
   transform: translateX(4px);
 }
 
+/* Handles stay visible so the list can be scanned; hover sharpens them */
 .find-detail {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
-  opacity: 0;
-  transform: translateX(12px);
+  color: var(--faint);
   transition:
-    opacity   240ms cubic-bezier(0.2, 0.6, 0.2, 1),
+    color     240ms cubic-bezier(0.2, 0.6, 0.2, 1),
     transform 280ms cubic-bezier(0.2, 0.6, 0.2, 1);
-  pointer-events: none;
 }
-.find-item:hover .find-detail {
-  opacity: 1;
+.find-item:hover .find-detail,
+.find-item:focus-visible .find-detail {
+  color: var(--ink);
   transform: translate(4px, -2px);
-  pointer-events: auto;
 }
+.find-item:focus-visible .find-platform { transform: translateX(4px); }
 
 .find-handle {
   font-family: var(--mono);
@@ -693,6 +797,8 @@ body[data-view="find"] .stage {
   letter-spacing: 0.06em;
   color: var(--muted);
 }
+.find-item:hover .find-handle,
+.find-item:focus-visible .find-handle { color: var(--ink); }
 .find-arrow {
   display: inline-flex;
   align-items: center;
@@ -840,11 +946,21 @@ body[data-rule="none"] { --rule: transparent; }
     gap: 24px;
   }
 
+  /* Stack caption over the card; the flock keeps the space above */
+  .anim-foot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .fig { max-width: none; }
+  .fig-text { display: none; }
+  .fig-num, .fig-hint { display: inline; margin: 0 8px 0 0; }
+  .now-card { max-width: none; }
+
   .namebar { grid-template-columns: 1fr; }
   .namebar .meta { text-align: left; }
   h1.name { font-size: clamp(48px, 13vw, 80px); }
   .find-platform { font-size: clamp(24px, 7vw, 36px); }
-  .find-list .ext { display: none; }
 
   /* Mobile: show intro on work/find but animate-clamp to 2 lines */
   body[data-view="work"] .intro,
@@ -899,11 +1015,9 @@ body[data-rule="none"] { --rule: transparent; }
     grid-column: auto;
   }
 
-  /* No hover on mobile — always show handle + arrow */
+  /* No hover on mobile — handle + arrow at full strength */
   .find-detail {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
+    color: var(--muted);
     transition: none;
   }
   /* Suppress all hover transforms on mobile — tap state is instant */
