@@ -1166,3 +1166,54 @@ h1.name .period {
   .find-item::after,
   .work-head .line::after { transition: none; }
 }
+
+/* ── "now" jump: a green light runs round the border, the arrow nudges ── */
+@property --orbit {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.work-jump { position: relative; }
+.work-jump::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--orbit),
+    transparent 0 62%, var(--shine) 80%, transparent 92% 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.work-jump:not(.is-at-now)::before {
+  opacity: 1;
+  animation: orbit 2.4s linear infinite;
+}
+.work-jump:not(.is-at-now) {
+  box-shadow: 0 0 0 0 rgba(58, 160, 90, 0);
+  animation: jump-glow 2.4s ease-in-out infinite;
+}
+.work-jump:not(.is-at-now):hover { border-color: var(--shine); }
+.work-jump:not(.is-at-now) .work-jump-arrow {
+  animation: nudge 1.2s ease-in-out infinite;
+}
+@keyframes orbit { to { --orbit: 360deg; } }
+@keyframes jump-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(58, 160, 90, 0); }
+  50%      { box-shadow: 0 0 10px 0 rgba(58, 160, 90, .28); }
+}
+@keyframes nudge {
+  0%, 100% { transform: translateY(-1px); }
+  50%      { transform: translateY(1.5px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-jump:not(.is-at-now)::before,
+  .work-jump:not(.is-at-now),
+  .work-jump:not(.is-at-now) .work-jump-arrow { animation: none; }
+  .work-jump:not(.is-at-now) { border-color: var(--shine); }
+}
