@@ -118,6 +118,11 @@
 
       document.body.dataset.view = name;
       window.scrollTo({ top: 0, behavior: 'auto' });
+      // Re-sync scroll-driven bits (jump label, progress) once the new
+      // view has laid out
+      requestAnimationFrame(function () {
+        window.dispatchEvent(new Event('scroll'));
+      });
 
       if (name === 'index') {
         startAnim();
@@ -254,10 +259,12 @@
           : 'Skip to what I do now');
       }
 
+      const head = document.querySelector('.work-head');
       const progressLine = document.querySelector('.work-head .line');
       const trail = document.querySelector('.trail');
 
       function syncJump() {
+        if (head) head.classList.toggle('is-stuck', window.scrollY > 0 && head.getBoundingClientRect().top <= 0.5);
         // The rule in the sticky header fills as you read down the trail
         if (progressLine && trail) {
           const t = trail.getBoundingClientRect();
@@ -265,10 +272,12 @@
           const p = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - t.top) / Math.max(1, travel)));
           progressLine.style.setProperty('--p', p.toFixed(4));
         }
+        // "At now" only while the last entry is up top, or the page can't
+        // scroll further. Any scroll back up offers the jump down again.
         const r = now.getBoundingClientRect();
-        // "At now" once a third of the last entry has come into view
-        const shown = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
-        setAtNow(shown > Math.min(r.height, window.innerHeight) * 0.34);
+        const doc = document.documentElement;
+        const atBottom = window.innerHeight + window.scrollY >= doc.scrollHeight - 4;
+        setAtNow(atBottom || r.top <= window.innerHeight * 0.35);
       }
 
       window.addEventListener('scroll', syncJump, { passive: true });
