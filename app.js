@@ -263,8 +263,17 @@
       const progressLine = document.querySelector('.work-head .line');
       const trail = document.querySelector('.trail');
 
+      // Pinned = the marker just above the header has scrolled out of view.
+      // Measuring the header itself is unreliable on iOS Safari.
+      const sentinel = document.querySelector('.work-head-sentinel');
+      if (head && sentinel && 'IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          const e = entries[0];
+          head.classList.toggle('is-stuck', !e.isIntersecting && e.boundingClientRect.top < 0);
+        }).observe(sentinel);
+      }
+
       function syncJump() {
-        if (head) head.classList.toggle('is-stuck', window.scrollY > 0 && head.getBoundingClientRect().top <= 0.5);
         // The rule in the sticky header fills as you read down the trail
         if (progressLine && trail) {
           const t = trail.getBoundingClientRect();
