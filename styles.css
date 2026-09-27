@@ -474,8 +474,21 @@ body[data-view="work"] .work-head {
 /* iOS Safari paints the page behind the status bar; once stuck, carry the
    header's paper up into that strip so text doesn't scroll through above it */
 body[data-view="work"] .work-head.is-stuck {
-  box-shadow: 0 -120px 0 0 var(--bg);
+  box-shadow: 0 -160px 0 0 var(--bg);
 }
+/* Belt and braces: a paper strip parked just above the viewport, which only
+   shows in the area Safari paints behind the status bar */
+body[data-view="work"]::before {
+  content: "";
+  position: fixed;
+  left: 0; right: 0;
+  top: -160px;
+  height: 160px;
+  background: var(--bg);
+  z-index: 3;
+  pointer-events: none;
+}
+.work-head-sentinel { height: 1px; margin-bottom: -1px; }
 .work-head .num   { color: var(--muted); }
 .work-head .line  {
   position: relative;
