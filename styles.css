@@ -467,26 +467,17 @@ body[data-view="work"] .work-head {
   position: sticky;
   top: 0;
   z-index: 2;
-  margin: 0 0 24px;
-  padding: 14px 0 12px;
+  /* Full-bleed paper, content kept in the column. Safari 26 only tints
+     the status-bar area from a pinned header that spans the viewport;
+     a narrower one lets the page scroll visibly behind the clock. */
+  margin: 0 calc(50% - 50vw) 24px;
+  padding: 14px calc(50vw - 50%) 12px;
   background: var(--bg);
 }
 /* iOS Safari paints the page behind the status bar; once stuck, carry the
    header's paper up into that strip so text doesn't scroll through above it */
 body[data-view="work"] .work-head.is-stuck {
   box-shadow: 0 -160px 0 0 var(--bg);
-}
-/* Belt and braces: a paper strip parked just above the viewport, which only
-   shows in the area Safari paints behind the status bar */
-body[data-view="work"]::before {
-  content: "";
-  position: fixed;
-  left: 0; right: 0;
-  top: -160px;
-  height: 160px;
-  background: var(--bg);
-  z-index: 3;
-  pointer-events: none;
 }
 .work-head-sentinel { height: 1px; margin-bottom: -1px; }
 .work-head .num   { color: var(--muted); }
