@@ -7,6 +7,7 @@
   --faint: #c4c4c4;
   --rule: #e7e7e7;
   --accent: #587a5c;          /* subtle pine green */
+  --shine:  #3aa05a;          /* brighter green for glints */
   --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
   --mono:  "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --pad:   clamp(24px, 4vw, 56px);
@@ -471,7 +472,21 @@ body[data-view="work"] .work-head {
   background: var(--bg);
 }
 .work-head .num   { color: var(--muted); }
-.work-head .line  { height: 1px; background: var(--rule); }
+.work-head .line  {
+  position: relative;
+  height: 1px;
+  background: var(--rule);
+}
+/* Reading progress: ink fills the rule as you move down the trail */
+.work-head .line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  transform-origin: left;
+  transform: scaleX(var(--p, 0));
+  transition: transform 120ms linear;
+}
 
 /* Jump between the start of the story and the present */
 .work-jump {
@@ -572,7 +587,12 @@ body[data-density="tight"] .trail li { padding: 14px 0; }
   transition: text-decoration-color 200ms ease;
 }
 .work-link:hover { text-decoration-color: var(--accent); }
-.work-link svg { flex-shrink: 0; }
+.work-link svg {
+  flex-shrink: 0;
+  transition: transform 280ms cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+/* The arrow hops the way it points */
+.work-link:hover svg { transform: translate(2px, -2px); }
 .trail .aside {
   display: block;
   margin-top: 8px;
@@ -1025,4 +1045,124 @@ body[data-rule="none"] { --rule: transparent; }
   .find-item:hover .find-platform { transform: none; }
   .find-item:hover .find-detail   { transform: translateX(0); }
   .find-item:hover .find-arrow    { transform: none; }
+}
+
+/* ── Shine: a green glint that sweeps across the "now" labels ─── */
+.work-jump:not(.is-at-now) .work-jump-label,
+.trail .now,
+.now-card-label {
+  --shine-base: var(--ink);
+  background-image: linear-gradient(100deg,
+    var(--shine-base) 0 36%, var(--shine) 50%, var(--shine-base) 64% 100%);
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 3.6s ease-in-out infinite;
+}
+.work-jump:not(.is-at-now) .work-jump-label { --shine-base: var(--ink-2); }
+.trail .now      { animation-delay: 1.2s; }
+.now-card-label  { animation-delay: 0.8s; }
+@keyframes shine {
+  0%        { background-position: 100% 0; }
+  55%, 100% { background-position: 0 0; }
+}
+
+/* The CTA gets a soft light sweep now and then, only while at rest */
+.cta::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 40%;
+  background: linear-gradient(100deg,
+    transparent, rgba(255,255,255,.26), transparent);
+  transform: translateX(-130%) skewX(-20deg);
+  animation: glint 6.5s ease-in-out 2.4s infinite;
+  pointer-events: none;
+}
+.cta.is-hovered::after,
+.cta.is-copied::after { animation: none; opacity: 0; }
+@keyframes glint {
+  0%        { transform: translateX(-130%) skewX(-20deg); }
+  16%, 100% { transform: translateX(290%)  skewX(-20deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-jump:not(.is-at-now) .work-jump-label,
+  .trail .now,
+  .now-card-label {
+    animation: none;
+    background: none;
+    color: var(--shine-base);
+  }
+  .cta::after { display: none; }
+}
+
+/* ── Name: letters set one by one, the period lands last ───────── */
+h1.name .ch {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.28em) rotate(4deg);
+  filter: blur(6px);
+  animation: ch-set 900ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: calc(420ms + var(--i) * 45ms);
+}
+h1.name .period {
+  display: inline-block;
+  transform: scale(0);
+  transform-origin: 50% 80%;
+  animation: period-land 700ms cubic-bezier(0.34, 1.6, 0.64, 1) 1000ms forwards;
+}
+@keyframes ch-set {
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes period-land {
+  0%   { transform: scale(0);   color: var(--shine); }
+  60%  { transform: scale(1.5); color: var(--shine); }
+  100% { transform: scale(1);   color: var(--ink); }
+}
+
+/* ── Work: entries rise in as they arrive ──────────────────────── */
+.has-trail-reveal .trail li {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity   700ms cubic-bezier(0.2, 0.6, 0.2, 1),
+    transform 800ms cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.has-trail-reveal .trail li.is-in {
+  opacity: 1;
+  transform: none;
+}
+/* The aside trails the entry by a beat */
+.has-trail-reveal .trail li .aside {
+  opacity: 0;
+  transition: opacity 600ms ease 260ms;
+}
+.has-trail-reveal .trail li.is-in .aside { opacity: 1; }
+
+/* ── Find me: the name leans into italic, an ink rule draws under ─ */
+.find-item { position: relative; }
+.find-item::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 1px;
+  background: var(--ink);
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 520ms cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+.find-item:hover::after,
+.find-item:focus-visible::after { transform: scaleX(1); }
+.find-item:hover .find-platform,
+.find-item:focus-visible .find-platform { font-style: italic; }
+
+@media (prefers-reduced-motion: reduce) {
+  h1.name .ch,
+  h1.name .period { animation: none; opacity: 1; transform: none; filter: none; }
+  .work-link svg,
+  .find-item::after,
+  .work-head .line::after { transition: none; }
 }
