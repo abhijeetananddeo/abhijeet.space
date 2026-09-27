@@ -7,6 +7,7 @@
   --faint: #c4c4c4;
   --rule: #e7e7e7;
   --accent: #587a5c;          /* subtle pine green */
+  --shine:  #3aa05a;          /* brighter green for glints */
   --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
   --mono:  "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --pad:   clamp(24px, 4vw, 56px);
@@ -1025,4 +1026,56 @@ body[data-rule="none"] { --rule: transparent; }
   .find-item:hover .find-platform { transform: none; }
   .find-item:hover .find-detail   { transform: translateX(0); }
   .find-item:hover .find-arrow    { transform: none; }
+}
+
+/* ── Shine: a green glint that sweeps across the "now" labels ─── */
+.work-jump:not(.is-at-now) .work-jump-label,
+.trail .now,
+.now-card-label {
+  --shine-base: var(--ink);
+  background-image: linear-gradient(100deg,
+    var(--shine-base) 0 36%, var(--shine) 50%, var(--shine-base) 64% 100%);
+  background-size: 250% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 3.6s ease-in-out infinite;
+}
+.work-jump:not(.is-at-now) .work-jump-label { --shine-base: var(--ink-2); }
+.trail .now      { animation-delay: 1.2s; }
+.now-card-label  { animation-delay: 0.8s; }
+@keyframes shine {
+  0%        { background-position: 100% 0; }
+  55%, 100% { background-position: 0 0; }
+}
+
+/* The CTA gets a soft light sweep now and then, only while at rest */
+.cta::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 40%;
+  background: linear-gradient(100deg,
+    transparent, rgba(255,255,255,.26), transparent);
+  transform: translateX(-130%) skewX(-20deg);
+  animation: glint 6.5s ease-in-out 2.4s infinite;
+  pointer-events: none;
+}
+.cta.is-hovered::after,
+.cta.is-copied::after { animation: none; opacity: 0; }
+@keyframes glint {
+  0%        { transform: translateX(-130%) skewX(-20deg); }
+  16%, 100% { transform: translateX(290%)  skewX(-20deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-jump:not(.is-at-now) .work-jump-label,
+  .trail .now,
+  .now-card-label {
+    animation: none;
+    background: none;
+    color: var(--shine-base);
+  }
+  .cta::after { display: none; }
 }
