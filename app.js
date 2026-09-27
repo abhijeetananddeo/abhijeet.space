@@ -254,7 +254,17 @@
           : 'Skip to what I do now');
       }
 
+      const progressLine = document.querySelector('.work-head .line');
+      const trail = document.querySelector('.trail');
+
       function syncJump() {
+        // The rule in the sticky header fills as you read down the trail
+        if (progressLine && trail) {
+          const t = trail.getBoundingClientRect();
+          const travel = t.height - window.innerHeight * 0.5;
+          const p = Math.min(1, Math.max(0, (window.innerHeight * 0.5 - t.top) / Math.max(1, travel)));
+          progressLine.style.setProperty('--p', p.toFixed(4));
+        }
         const r = now.getBoundingClientRect();
         // "At now" once a third of the last entry has come into view
         const shown = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
@@ -292,6 +302,21 @@
       });
     }
 
+    // ── Work: entries rise in as they scroll into view ───────────
+    function initTrailReveal() {
+      const items = document.querySelectorAll('.trail li');
+      if (!items.length || prefersReducedMotion() || !('IntersectionObserver' in window)) return;
+      document.documentElement.classList.add('has-trail-reveal');
+      const io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+      items.forEach(function (li) { io.observe(li); });
+    }
+
     // ── Intro random line ────────────────────────────────────────
     function setRandomIntroLine() {
       if (!introRandom) return;
@@ -324,6 +349,7 @@
     initCTA();
     initWorkJump();
     initAbbr();
+    initTrailReveal();
     setRandomIntroLine();
     updateAgeCounter();
     setInterval(updateAgeCounter, 250);
