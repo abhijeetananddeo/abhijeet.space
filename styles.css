@@ -946,16 +946,17 @@ body[data-rule="none"] { --rule: transparent; }
     gap: 24px;
   }
 
-  /* Stack caption over the card; the flock keeps the space above */
-  .anim-foot {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+  /* Phones: no flock, no caption — just the "now" note above the name */
+  .anim-wrap,
+  .fig { display: none; }
+  .anim-foot { justify-content: flex-start; }
+  .now-card {
+    max-width: none;
+    padding: 14px 0 0;
+    border: none;
+    border-top: 1px solid var(--rule);
   }
-  .fig { max-width: none; }
-  .fig-text { display: none; }
-  .fig-num, .fig-hint { display: inline; margin: 0 8px 0 0; }
-  .now-card { max-width: none; }
+  .now-card:hover { transform: none; box-shadow: none; }
 
   .namebar { grid-template-columns: 1fr; }
   .namebar .meta { text-align: left; }

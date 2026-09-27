@@ -24,7 +24,8 @@
 
     // ── Murmuration animation ────────────────────────────────────
     function startAnim() {
-      if (!animWrap) return;
+      // Phones get the quiet version: no flock, just the words
+      if (!animWrap || isMobile()) return;
       if (!murApi) {
         murApi = Murmuration.init(animWrap, {
           ink:         '#0c0c0c',
@@ -330,10 +331,15 @@
     if (figHint && window.matchMedia('(hover: none)').matches) {
       figHint.textContent = 'Drag through it.';
     }
-    let countTimer = null;
+    // Crossing the phone breakpoint starts or stops the flock
+    let resizeTimer = null;
     window.addEventListener('resize', function () {
-      clearTimeout(countTimer);
-      countTimer = setTimeout(updateBirdCount, 250);
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        if (currentView() !== 'index') return;
+        if (isMobile()) pauseAnim();
+        else startAnim();
+      }, 250);
     });
 
     window.addEventListener('hashchange', function () { showView(currentView()); });
