@@ -415,6 +415,33 @@ body[data-view="find"]  .view-find {
   line-height: 1.45;
   color: var(--ink);
 }
+/* The agent fleet: name, dotted leader, job */
+.crew {
+  display: grid;
+  gap: 3px;
+  margin: 4px 0 2px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+.crew-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.crew-row::after {
+  content: "";
+  order: 1;
+  flex: 1;
+  border-bottom: 1px dotted var(--faint);
+}
+.crew-name { color: var(--ink); }
+.crew-role { order: 2; color: var(--muted); }
+/* Short desktop screens: the sentence alone, so the card clears the intro */
+@media (min-width: 721px) and (max-height: 780px) {
+  .crew { display: none; }
+}
+
 .now-card-link {
   font-family: var(--mono);
   font-size: 10px;
